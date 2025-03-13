@@ -1,5 +1,3 @@
-// background.js
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "skipAd" && sender.tab) {
       const tabId = sender.tab.id;
@@ -7,7 +5,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.scripting.executeScript({
         target: { tabId: tabId },
         function: skipAdInPage
+      }).then(() => {
+        sendResponse({ status: "success" }); // Ensure we send a response
+      }).catch(error => {
+        console.error("Script execution error:", error);
+        sendResponse({ status: "error", message: error.message });
       });
+
+      return true; // Required to indicate we will send a response asynchronously
     }
   });
 
