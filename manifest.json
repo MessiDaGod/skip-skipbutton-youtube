@@ -5,11 +5,16 @@
   "description": "Automatically skips YouTube ads by jumping to the end.",
   "permissions": [
     "scripting",
-    "activeTab"
+    "activeTab",
+    "cookies",
+    "browsingData"
   ],
   "host_permissions": [
     "https://www.youtube.com/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [

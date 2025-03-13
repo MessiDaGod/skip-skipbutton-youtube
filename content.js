@@ -5,6 +5,14 @@ function detectAndSkipAd() {
     if (video && adContainer && adContainer.offsetParent !== null) {
         console.info("YouTube Auto Skipper: Ad detected. Skipping...");
         video.currentTime = video.duration; // Jump to end of ad
+
+        // Wait a short moment, then resume playback
+        setTimeout(() => {
+            if (video.paused) {
+                console.info("YouTube Auto Skipper: Resuming playback...");
+                video.play(); // Resume the video
+            }
+        }, 0);
     }
 }
 
