@@ -8,9 +8,31 @@ function detectAndSkipAd() {
     }
 }
 
+function removeYouTubePopups() {
+    const popupContainer = document.querySelector("ytd-popup-container");
+    const promoRenderer = document.querySelector("yt-mealbar-promo-renderer");
+
+    if (popupContainer) {
+        console.info("YouTube Auto Skipper: Removing popup container...");
+        popupContainer.remove();
+    }
+
+    if (promoRenderer) {
+        console.info("YouTube Auto Skipper: Removing YouTube promo banner...");
+        promoRenderer.remove();
+    }
+}
+
+
 // Observe changes in YouTube's DOM to detect ads dynamically
-const observer = new MutationObserver(detectAndSkipAd);
+const observer = new MutationObserver(() => {
+    detectAndSkipAd();
+    removeYouTubePopups();
+});
+
 observer.observe(document.body, { childList: true, subtree: true });
 
 // Extra fallback check every second
 setInterval(detectAndSkipAd, 1000);
+
+removeYouTubePopups();

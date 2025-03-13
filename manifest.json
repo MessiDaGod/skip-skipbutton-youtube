@@ -2,27 +2,16 @@
   "manifest_version": 3,
   "name": "YouTube Auto Skipper",
   "version": "1.0",
-  "description": "Automatically skips YouTube ads and clears YouTube local storage.",
-  "permissions": [
-    "cookies",
-    "browsingData",
-    "scripting",
-    "activeTab"
-  ],
-  "host_permissions": [
-    "https://www.youtube.com/*"
-  ],
+  "description": "Automatically skips YouTube ads and clears YouTube local storage & cookies.",
+  "permissions": ["cookies", "browsingData", "scripting", "activeTab"],
+  "host_permissions": ["https://www.youtube.com/*"],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://www.youtube.com/*"
-      ],
-      "js": [
-        "content.js"
-      ],
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content.js"],
       "run_at": "document_idle"
     }
   ],
