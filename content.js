@@ -1,55 +1,16 @@
-let skipButtonPreviouslyFound = false;
+function detectAndSkipAd() {
+    const video = document.querySelector("video");
+    const adContainer = document.querySelector(".ytp-ad-player-overlay-layout"); // Ad indicator
 
-function findSkipButton() {
-  const skipButtons = document.querySelectorAll(".ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button");
-
-  if (skipButtons.length === 0) {
-    if (skipButtonPreviouslyFound) {
-      console.info("Skip Ad button removed.");
-      skipButtonPreviouslyFound = false;
+    if (video && adContainer && adContainer.offsetParent !== null) {
+        console.info("YouTube Auto Skipper: Ad detected. Skipping...");
+        video.currentTime = video.duration; // Jump to end of ad
     }
-    return null;
-  }
-
-  if (!skipButtonPreviouslyFound) {
-    console.info("Skip Ad button detected.");
-    skipButtonPreviouslyFound = true;
-  }
-
-  for (const button of skipButtons) {
-    if (button.offsetParent !== null && !button.disabled) {
-      console.info("YouTube Auto Skipper: Clicking 'Skip Ad' button...");
-
-      // Dispatch real click events
-      button.dispatchEvent(new Event("pointerdown", { bubbles: true }));
-      button.dispatchEvent(new Event("pointerup", { bubbles: true }));
-      button.dispatchEvent(new Event("click", { bubbles: true, cancelable: true }));
-
-      return true;
-    }
-  }
-  return false;
 }
 
-function checkAndSend() {
-  if (!chrome.runtime?.id) return; // Ensure extension is running
-  const found = findSkipButton();
-  if (found) {
-    try {
-      chrome.runtime.sendMessage({ action: "skipAd" }, (response) => {
-        if (chrome.runtime.lastError) {
-          console.error("Send message failed:", chrome.runtime.lastError.message);
-        }
-      });
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
-  }
-}
-
-// Observe changes in YouTube's DOM
-const observer = new MutationObserver(checkAndSend);
+// Observe changes in YouTube's DOM to detect ads dynamically
+const observer = new MutationObserver(detectAndSkipAd);
 observer.observe(document.body, { childList: true, subtree: true });
 
 // Extra fallback check every second
-setInterval(checkAndSend, 1000);
+setInterval(detectAndSkipAd, 1000);
