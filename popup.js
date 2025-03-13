@@ -1,20 +1,22 @@
-document.getElementById("skipAd").addEventListener("click", () => {
+document.getElementById("clearStorage").addEventListener("click", () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.scripting.executeScript({
             target: { tabId: tabs[0].id },
-            function: forceSkipAd
+            function: clearYouTubeLocalStorage
         });
     });
 });
 
-// Function to force skip the ad (runs inside YouTube page)
-function forceSkipAd() {
-    const video = document.querySelector("video");
-    if (video) {
-        console.info("YouTube Auto Skipper: Skipping Ad via Popup...");
-        video.currentTime = video.duration; // Jump to end of ad
-        document.getElementById("status").textContent = "Ad Skipped!";
-    } else {
-        document.getElementById("status").textContent = "No Ad Detected";
+// Function to remove all YouTube local storage keys that start with "yt"
+function clearYouTubeLocalStorage() {
+    console.info("YouTube Auto Skipper: Clearing all YouTube Local Storage keys...");
+
+    for (let key in localStorage) {
+        if (key.startsWith("yt")) {
+            localStorage.removeItem(key);
+            console.info(`Removed: ${key}`);
+        }
     }
+
+    alert("YouTube Local Storage Cleared!");
 }
