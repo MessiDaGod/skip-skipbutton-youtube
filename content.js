@@ -23,8 +23,7 @@ function removeYouTubePopups() {
     }
 }
 
-
-// Observe changes in YouTube's DOM to detect ads dynamically
+// Observe changes in YouTube's DOM to detect ads and popups dynamically
 const observer = new MutationObserver(() => {
     detectAndSkipAd();
     removeYouTubePopups();
@@ -33,6 +32,11 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, { childList: true, subtree: true });
 
 // Extra fallback check every second
-setInterval(detectAndSkipAd, 1000);
+setInterval(() => {
+    detectAndSkipAd();
+    removeYouTubePopups();
+}, 1000);
 
+// Run once on script load in case elements are already present
+detectAndSkipAd();
 removeYouTubePopups();
